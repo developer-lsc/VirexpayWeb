@@ -141,7 +141,7 @@ const Register = () => {
             <BrandIcon>
               <FileText size={20} />
             </BrandIcon>
-            <BrandText>Contraktor</BrandText>
+            <BrandText>Virexapay</BrandText>
           </Brand>
 
           <Title>Crie sua conta</Title>

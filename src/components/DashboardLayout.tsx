@@ -227,7 +227,7 @@ const DashboardLayout = () => {
             <BrandIcon>
               <FileText size={16} />
             </BrandIcon>
-            <BrandText>Contraktor</BrandText>
+            <BrandText>Virexapay</BrandText>
           </Brand>
           <MobileCloseButton onClick={() => setSidebarOpen(false)}>
             <X size={20} />

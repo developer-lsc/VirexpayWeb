@@ -339,7 +339,7 @@ const Landing = () => {
             <BrandIcon>
               <FileText size={20} />
             </BrandIcon>
-            <BrandText>Contraktor</BrandText>
+            <BrandText>Virexapay</BrandText>
           </Brand>
 
           <NavLinks>
@@ -509,9 +509,9 @@ const Landing = () => {
             <BrandIcon>
               <FileText size={16} />
             </BrandIcon>
-            <strong>Contraktor</strong>
+            <strong>Virexapay</strong>
           </Brand>
-          <FooterText>© 2026 Contraktor. Todos os direitos reservados.</FooterText>
+          <FooterText>© 2026 Virexapay. Todos os direitos reservados.</FooterText>
         </FooterInner>
       </Footer>
     </Page>

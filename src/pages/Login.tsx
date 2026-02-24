@@ -155,7 +155,7 @@ const Login = () => {
             <BrandIcon>
               <FileText size={20} />
             </BrandIcon>
-            <BrandText>Contraktor</BrandText>
+            <BrandText>Virexapay</BrandText>
           </Brand>
 
           <Title>Bem-vindo de volta</Title>
