@@ -26,7 +26,9 @@ const Header = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 30px;
+  font-size: 24px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.foreground};
 `;
 
 const Subtitle = styled.p`
@@ -49,6 +51,7 @@ const SearchIcon = styled(Search)`
 
 const SearchInput = styled(Input)`
   padding-left: 40px;
+  min-height: 44px;
 `;
 
 const Grid = styled.div`
@@ -65,11 +68,17 @@ const Grid = styled.div`
 `;
 
 const Card = styled(motion.div)`
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radius.lg};
+  border: 1px solid color-mix(in srgb, ${({ theme }) => theme.colors.border} 50%, transparent);
+  border-radius: ${({ theme }) => theme.radius.xl};
   background: ${({ theme }) => theme.colors.card};
   box-shadow: ${({ theme }) => theme.shadows.card};
   padding: 24px;
+  cursor: pointer;
+  transition: box-shadow 300ms ease;
+
+  &:hover {
+    box-shadow: ${({ theme }) => theme.shadows.elevated};
+  }
 `;
 
 const CardTop = styled.div`
@@ -97,11 +106,17 @@ const IconButton = styled.button`
   background: transparent;
   color: ${({ theme }) => theme.colors.mutedForeground};
   cursor: pointer;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.foreground};
+  }
 `;
 
 const Name = styled.h3`
   margin-bottom: 4px;
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.cardForeground};
 `;
 
 const Document = styled.p`
@@ -121,12 +136,24 @@ const DetailRow = styled.div`
   gap: 8px;
   font-size: 14px;
   color: ${({ theme }) => theme.colors.mutedForeground};
+
+  > svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `;
 
 const Footer = styled.div`
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid ${({ theme }) => theme.colors.border};
+  border-top: 1px solid color-mix(in srgb, ${({ theme }) => theme.colors.border} 50%, transparent);
 `;
 
 const ContractsInfo = styled.span`

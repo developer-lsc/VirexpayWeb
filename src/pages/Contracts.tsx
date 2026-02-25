@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, FileSignature, MoreHorizontal, Eye } from "lucide-react";
+import { Plus, Search, FilePenLine, MoreHorizontal, Eye } from "lucide-react";
 
 const mockContracts = [
   { id: "1", client: "Maria Silva", title: "Consultoria de Marketing", value: "R$ 3.500,00", installments: 3, status: "Signed", date: "22/02/2026" },
@@ -81,12 +81,17 @@ const HeadCell = styled.th`
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   text-align: left;
   font-size: 14px;
+  line-height: 20px;
   font-weight: 500;
   color: ${({ theme }) => theme.colors.mutedForeground};
 `;
 
 const Row = styled(motion.tr)`
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  border-bottom: 1px solid color-mix(in srgb, ${({ theme }) => theme.colors.border} 50%, transparent);
+
+  &:hover > td {
+    background: color-mix(in srgb, ${({ theme }) => theme.colors.foreground} 6%, ${({ theme }) => theme.colors.card});
+  }
 
   &:last-child {
     border-bottom: 0;
@@ -94,8 +99,25 @@ const Row = styled(motion.tr)`
 `;
 
 const Cell = styled.td`
-  padding: 14px 24px;
+  padding: 16px 24px;
   font-size: 14px;
+  line-height: 20px;
+  background: transparent;
+  transition: background-color 200ms ease;
+`;
+
+const ContractMainCell = styled(Cell)`
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.cardForeground};
+`;
+
+const MutedCell = styled(Cell)`
+  color: ${({ theme }) => theme.colors.mutedForeground};
+`;
+
+const StrongCell = styled(Cell)`
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.cardForeground};
 `;
 
 const ContractCell = styled.div`
@@ -117,16 +139,21 @@ const ContractIcon = styled.div`
 
 const Actions = styled.div`
   display: flex;
-  gap: 6px;
+  align-items: center;
+  gap: 4px;
 `;
 
 const ActionButton = styled.button`
   border: 0;
   background: transparent;
   color: ${({ theme }) => theme.colors.mutedForeground};
-  border-radius: ${({ theme }) => theme.radius.sm};
-  padding: 6px;
+  border-radius: ${({ theme }) => theme.radius.md};
+  padding: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease;
 
   &:hover {
     background: ${({ theme }) => theme.colors.muted};
@@ -139,6 +166,7 @@ const Badge = styled.span<{ $status: string }>`
   border-radius: 999px;
   padding: 2px 10px;
   font-size: 12px;
+  line-height: 16px;
   font-weight: 600;
   color: ${({ theme, $status }) =>
     $status === "Signed"
@@ -199,21 +227,21 @@ const Contracts = () => {
             <tbody>
               {filtered.map((c, i) => (
                 <Row key={c.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03 }}>
-                  <Cell>
+                  <ContractMainCell>
                     <ContractCell>
                       <ContractIcon>
-                        <FileSignature size={16} />
+                        <FilePenLine size={16} />
                       </ContractIcon>
                       <span>{c.title}</span>
                     </ContractCell>
-                  </Cell>
-                  <Cell style={{ color: "hsl(215 16% 47%)" }}>{c.client}</Cell>
-                  <Cell>{c.value}</Cell>
-                  <Cell style={{ color: "hsl(215 16% 47%)" }}>{c.installments}x</Cell>
+                  </ContractMainCell>
+                  <MutedCell>{c.client}</MutedCell>
+                  <StrongCell>{c.value}</StrongCell>
+                  <MutedCell>{c.installments}x</MutedCell>
                   <Cell>
                     <Badge $status={c.status}>{statusLabels[c.status]}</Badge>
                   </Cell>
-                  <Cell style={{ color: "hsl(215 16% 47%)" }}>{c.date}</Cell>
+                  <MutedCell>{c.date}</MutedCell>
                   <Cell>
                     <Actions>
                       <ActionButton>

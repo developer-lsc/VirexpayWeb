@@ -24,7 +24,9 @@ const Header = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 30px;
+  font-size: 24px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.foreground};
 `;
 
 const Subtitle = styled.p`
@@ -42,8 +44,8 @@ const SummaryGrid = styled.div`
 `;
 
 const SummaryCard = styled(motion.div)`
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radius.lg};
+  border: 1px solid color-mix(in srgb, ${({ theme }) => theme.colors.border} 50%, transparent);
+  border-radius: ${({ theme }) => theme.radius.xl};
   background: ${({ theme }) => theme.colors.card};
   box-shadow: ${({ theme }) => theme.shadows.card};
   padding: 20px;
@@ -56,7 +58,8 @@ const SummaryLabel = styled.p`
 `;
 
 const SummaryValue = styled.p<{ $tone: string }>`
-  font-size: 30px;
+  font-size: 24px;
+  font-weight: 700;
   font-family: Inter, system-ui, sans-serif;
   color: ${({ theme, $tone }) => ($tone === "warning" ? theme.colors.warning : $tone === "success" ? theme.colors.success : theme.colors.destructive)};
 `;
@@ -77,11 +80,12 @@ const SearchIcon = styled(Search)`
 
 const SearchInput = styled(Input)`
   padding-left: 40px;
+  min-height: 44px;
 `;
 
 const TableCard = styled(motion.div)`
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radius.lg};
+  border: 1px solid color-mix(in srgb, ${({ theme }) => theme.colors.border} 50%, transparent);
+  border-radius: ${({ theme }) => theme.radius.xl};
   background: ${({ theme }) => theme.colors.card};
   box-shadow: ${({ theme }) => theme.shadows.card};
   overflow: hidden;
@@ -101,12 +105,17 @@ const HeadCell = styled.th`
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   text-align: left;
   font-size: 14px;
+  line-height: 20px;
   font-weight: 500;
   color: ${({ theme }) => theme.colors.mutedForeground};
 `;
 
 const Row = styled(motion.tr)`
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  border-bottom: 1px solid color-mix(in srgb, ${({ theme }) => theme.colors.border} 50%, transparent);
+
+  &:hover > td {
+    background: color-mix(in srgb, ${({ theme }) => theme.colors.foreground} 6%, ${({ theme }) => theme.colors.card});
+  }
 
   &:last-child {
     border-bottom: 0;
@@ -114,8 +123,25 @@ const Row = styled(motion.tr)`
 `;
 
 const Cell = styled.td`
-  padding: 14px 24px;
+  padding: 16px 24px;
   font-size: 14px;
+  line-height: 20px;
+  background: transparent;
+  transition: background-color 200ms ease;
+`;
+
+const ContractMainCell = styled(Cell)`
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.cardForeground};
+`;
+
+const MutedCell = styled(Cell)`
+  color: ${({ theme }) => theme.colors.mutedForeground};
+`;
+
+const StrongCell = styled(Cell)`
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.cardForeground};
 `;
 
 const ContractCell = styled.div`
@@ -140,6 +166,12 @@ const DateCell = styled.div`
   align-items: center;
   gap: 6px;
   color: ${({ theme }) => theme.colors.mutedForeground};
+
+  > svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
 `;
 
 const StatusBadge = styled.span<{ $status: string }>`
@@ -149,6 +181,7 @@ const StatusBadge = styled.span<{ $status: string }>`
   border-radius: 999px;
   padding: 2px 10px;
   font-size: 12px;
+  line-height: 16px;
   font-weight: 600;
   color: ${({ theme, $status }) =>
     $status === "Paid" ? theme.colors.success : $status === "Overdue" ? theme.colors.destructive : theme.colors.warning};
@@ -158,6 +191,12 @@ const StatusBadge = styled.span<{ $status: string }>`
       : $status === "Overdue"
       ? "color-mix(in srgb, " + theme.colors.destructive + " 12%, transparent)"
       : "color-mix(in srgb, " + theme.colors.warning + " 12%, transparent)"};
+
+  > svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+  }
 `;
 
 const Installments = () => {
@@ -212,22 +251,22 @@ const Installments = () => {
                 const StatusIcon = cfg.icon;
                 return (
                   <Row key={inst.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03 }}>
-                    <Cell>
+                    <ContractMainCell>
                       <ContractCell>
                         <ContractIcon>
                           <CreditCard size={16} />
                         </ContractIcon>
                         <span>{inst.contract}</span>
                       </ContractCell>
-                    </Cell>
-                    <Cell style={{ color: "hsl(215 16% 47%)" }}>{inst.client}</Cell>
+                    </ContractMainCell>
+                    <MutedCell>{inst.client}</MutedCell>
                     <Cell>
                       <DateCell>
                         <Calendar size={14} />
                         {inst.dueDate}
                       </DateCell>
                     </Cell>
-                    <Cell>{inst.amount}</Cell>
+                    <StrongCell>{inst.amount}</StrongCell>
                     <Cell>
                       <StatusBadge $status={inst.status}>
                         <StatusIcon size={12} />

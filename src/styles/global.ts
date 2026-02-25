@@ -11,12 +11,26 @@ export const GlobalStyle = createGlobalStyle`
     min-height: 100%;
   }
 
+  html {
+    height: 100%;
+  }
+
   body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
     background: ${({ theme }) => theme.colors.background};
     color: ${({ theme }) => theme.colors.foreground};
     font-family: 'DM Sans', 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
   }
 
   h1, h2, h3, h4, h5, h6 {

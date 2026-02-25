@@ -29,7 +29,7 @@ const fadeUp = {
 };
 
 const Page = styled.div`
-  min-height: 100vh;
+  min-height: 100dvh;
   background: ${({ theme }) => theme.colors.background};
 `;
 
@@ -110,7 +110,7 @@ const MobileMenuButton = styled.button`
 `;
 
 const MobileMenu = styled.div`
-  padding: 12px 16px 16px;
+  padding: 0 16px 16px;
   border-top: 1px solid ${({ theme }) => theme.colors.border};
   background: ${({ theme }) => theme.colors.background};
 
@@ -120,8 +120,14 @@ const MobileMenu = styled.div`
 `;
 
 const MobileMenuStack = styled.div`
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
+  padding-top: 12px;
+
+  > a > button {
+    width: 100%;
+  }
 `;
 
 const Hero = styled.section`
@@ -143,6 +149,14 @@ const HeroInner = styled(Container)`
   }
 `;
 
+const HeroContent = styled(motion.div)`
+  text-align: center;
+
+  @media (min-width: 1024px) {
+    text-align: left;
+  }
+`;
+
 const Badge = styled(motion.div)`
   margin-bottom: 16px;
   display: inline-flex;
@@ -158,8 +172,17 @@ const Badge = styled(motion.div)`
 
 const HeroTitle = styled(motion.h1)`
   margin-bottom: 24px;
-  font-size: clamp(38px, 6vw, 64px);
+  font-size: 36px;
+  font-weight: 900;
   line-height: 1.1;
+
+  @media (min-width: 768px) {
+    font-size: 48px;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 60px;
+  }
 `;
 
 const GradientText = styled.span`
@@ -171,18 +194,60 @@ const GradientText = styled.span`
 
 const HeroText = styled(motion.p)`
   margin-bottom: 32px;
-  max-width: 560px;
-  font-size: 20px;
+  margin-inline: auto;
+  max-width: 512px;
+  font-size: 18px;
   color: color-mix(in srgb, ${({ theme }) => theme.colors.primaryForeground} 70%, transparent);
+
+  @media (min-width: 1024px) {
+    margin-inline: 0;
+  }
 `;
 
 const HeroActions = styled(motion.div)`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 12px;
+
+  > a {
+    width: 100%;
+  }
+
+  > a > button {
+    width: 100%;
+  }
 
   @media (min-width: 640px) {
     flex-direction: row;
+
+    > a {
+      width: auto;
+    }
+
+    > a > button {
+      width: auto;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    justify-content: flex-start;
+  }
+`;
+
+const HeroPrimaryButton = styled(Button)`
+  border-radius: ${({ theme }) => theme.radius.xl};
+  box-shadow: ${({ theme }) => theme.shadows.elevated};
+`;
+
+const HeroSecondaryButton = styled(Button)`
+  border-radius: ${({ theme }) => theme.radius.xl};
+  color: color-mix(in srgb, ${({ theme }) => theme.colors.primaryForeground} 80%, transparent);
+  border-color: color-mix(in srgb, ${({ theme }) => theme.colors.primaryForeground} 20%, transparent);
+  background: color-mix(in srgb, ${({ theme }) => theme.colors.accent} 5%, transparent);
+
+  &:hover {
+    background: color-mix(in srgb, ${({ theme }) => theme.colors.primaryForeground} 5%, transparent);
   }
 `;
 
@@ -531,7 +596,7 @@ const Landing = () => {
 
       <Hero>
         <HeroInner>
-          <motion.div initial="hidden" animate="visible">
+          <HeroContent initial="hidden" animate="visible">
             <Badge variants={fadeUp} custom={0}>
               <Clock size={16} /> 14 dias grátis • Sem cartão de crédito
             </Badge>
@@ -543,17 +608,17 @@ const Landing = () => {
             </HeroText>
             <HeroActions variants={fadeUp} custom={3}>
               <Link to="/registro">
-                <Button
+                <HeroPrimaryButton
                   variant="hero"
                   size="xl">
-                  Começar grátis <ArrowRight size={18} />
-                </Button>
+                  Começar grátis <ArrowRight size={20} style={{ marginLeft: 4 }} />
+                </HeroPrimaryButton>
               </Link>
               <a href="#solucao">
-                <Button variant="hero-outline" size="xl">Como funciona</Button>
+                <HeroSecondaryButton variant="hero-outline" size="xl">Como funciona</HeroSecondaryButton>
               </a>
             </HeroActions>
-          </motion.div>
+          </HeroContent>
 
           <HeroImageWrap initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.3 }}>
             <HeroImage src={heroImage} alt="Contratos digitais e cobranças automatizadas" />

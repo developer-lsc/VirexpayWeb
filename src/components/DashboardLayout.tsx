@@ -24,7 +24,7 @@ const navItems = [
 
 const Shell = styled.div`
   display: flex;
-  min-height: 100vh;
+  min-height: 100dvh;
   background: ${({ theme }) => theme.colors.background};
 `;
 
@@ -50,7 +50,7 @@ const Sidebar = styled.aside<{ $open: boolean }>`
   border-right: 1px solid ${({ theme }) => theme.colors.sidebarBorder};
   background: ${({ theme }) => theme.colors.sidebarBackground};
   transform: translateX(${({ $open }) => ($open ? "0" : "-100%")});
-  transition: transform 0.2s ease;
+  transition: transform 200ms ease;
 
   @media (min-width: 1024px) {
     position: static;
@@ -105,7 +105,8 @@ const MobileCloseButton = styled.button`
 const SidebarNav = styled.nav`
   flex: 1;
   padding: 16px 12px;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 4px;
 `;
 
@@ -116,9 +117,20 @@ const NavItem = styled(Link)<{ $active: boolean }>`
   border-radius: ${({ theme }) => theme.radius.md};
   padding: 10px 12px;
   font-size: 14px;
+  line-height: 20px;
   font-weight: 500;
-  color: ${({ theme, $active }) => ($active ? theme.colors.sidebarPrimary : "color-mix(in srgb, " + theme.colors.sidebarForeground + " 70%, transparent)")};
+  color: ${({ theme, $active }) =>
+    $active
+      ? theme.colors.sidebarPrimary
+      : `color-mix(in srgb, ${theme.colors.sidebarForeground} 70%, transparent)`};
   background: ${({ theme, $active }) => ($active ? theme.colors.sidebarAccent : "transparent")};
+  transition: background-color 200ms ease, color 200ms ease;
+
+  > svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
 
   &:hover {
     background: ${({ theme }) => theme.colors.sidebarAccent};
@@ -139,9 +151,19 @@ const LogoutButton = styled.button`
   border: 0;
   border-radius: ${({ theme }) => theme.radius.md};
   padding: 10px 12px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
   background: transparent;
   color: color-mix(in srgb, ${({ theme }) => theme.colors.sidebarForeground} 70%, transparent);
   cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease;
+
+  > svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
 
   &:hover {
     background: ${({ theme }) => theme.colors.sidebarAccent};
@@ -236,7 +258,10 @@ const DashboardLayout = () => {
 
         <SidebarNav>
           {navItems.map((item) => {
-            const isActive = location.pathname === item.to;
+            const isActive =
+              item.to === "/app"
+                ? location.pathname === "/app"
+                : location.pathname.startsWith(item.to);
             return (
               <NavItem key={item.to} to={item.to} $active={isActive} onClick={() => setSidebarOpen(false)}>
                 <item.icon size={20} />
