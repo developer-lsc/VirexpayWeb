@@ -3,13 +3,24 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import NewClientModal, { type ClientFormValues } from "@/components/NewClientModal";
 import { Plus, Search, MoreHorizontal, Mail, Phone } from "lucide-react";
 
-const mockClients = [
-  { id: "1", name: "Maria Silva", document: "123.456.789-00", email: "maria@email.com", phone: "(11) 99999-0001", contracts: 3 },
-  { id: "2", name: "João Oliveira", document: "987.654.321-00", email: "joao@email.com", phone: "(21) 99999-0002", contracts: 2 },
-  { id: "3", name: "Ana Costa LTDA", document: "12.345.678/0001-00", email: "contato@anacosta.com", phone: "(31) 99999-0003", contracts: 5 },
-  { id: "4", name: "Pedro Santos", document: "456.789.123-00", email: "pedro@email.com", phone: "(41) 99999-0004", contracts: 1 },
+interface Client {
+  id: string;
+  name: string;
+  document: string;
+  email: string;
+  phone: string;
+  contracts: number;
+  isActive: boolean;
+}
+
+const mockClients: Client[] = [
+  { id: "1", name: "Maria Silva", document: "123.456.789-00", email: "maria@email.com", phone: "(11) 99999-0001", contracts: 3, isActive: true },
+  { id: "2", name: "João Oliveira", document: "987.654.321-00", email: "joao@email.com", phone: "(21) 99999-0002", contracts: 2, isActive: true },
+  { id: "3", name: "Ana Costa LTDA", document: "12.345.678/0001-00", email: "contato@anacosta.com", phone: "(31) 99999-0003", contracts: 5, isActive: true },
+  { id: "4", name: "Pedro Santos", document: "456.789.123-00", email: "pedro@email.com", phone: "(41) 99999-0004", contracts: 1, isActive: true },
 ];
 
 const Header = styled.div`
@@ -163,58 +174,141 @@ const ContractsInfo = styled.span`
 
 const Clients = () => {
   const [search, setSearch] = useState("");
+  const [clients, setClients] = useState<Client[]>(mockClients);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
 
-  const filtered = mockClients.filter(
+  const selectedClient = selectedClientId ? clients.find((client) => client.id === selectedClientId) ?? null : null;
+  const activeClients = clients.filter((client) => client.isActive);
+
+  const filtered = activeClients.filter(
     (c) => c.name.toLowerCase().includes(search.toLowerCase()) || c.email.toLowerCase().includes(search.toLowerCase()),
   );
 
+  const openCreateModal = () => {
+    setSelectedClientId(null);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (clientId: string) => {
+    setSelectedClientId(clientId);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedClientId(null);
+  };
+
+  const handleModalSubmit = (values: ClientFormValues) => {
+    if (selectedClient) {
+      setClients((prev) =>
+        prev.map((client) =>
+          client.id === selectedClient.id
+            ? {
+                ...client,
+                ...values,
+              }
+            : client,
+        ),
+      );
+      return;
+    }
+
+    setClients((prev) => [
+      {
+        id: `${Date.now()}`,
+        contracts: 0,
+        isActive: true,
+        ...values,
+      },
+      ...prev,
+    ]);
+  };
+
+  const handleInactivate = () => {
+    if (!selectedClient) return;
+
+    setClients((prev) =>
+      prev.map((client) =>
+        client.id === selectedClient.id
+          ? {
+              ...client,
+              isActive: false,
+            }
+          : client,
+      ),
+    );
+
+    closeModal();
+  };
+
   return (
-    <div>
-      <Header>
-        <div>
-          <Title>Clientes</Title>
-          <Subtitle>{mockClients.length} clientes cadastrados</Subtitle>
-        </div>
-        <Button variant="accent">
-          <Plus size={16} /> Novo cliente
-        </Button>
-      </Header>
+    <>
+      <div>
+        <Header>
+          <div>
+            <Title>Clientes</Title>
+            <Subtitle>{activeClients.length} clientes cadastrados</Subtitle>
+          </div>
+          <Button variant="accent" onClick={openCreateModal}>
+            <Plus size={16} /> Novo cliente
+          </Button>
+        </Header>
 
-      <SearchWrap>
-        <SearchIcon size={16} />
-        <SearchInput placeholder="Buscar clientes..." value={search} onChange={(e) => setSearch(e.target.value)} />
-      </SearchWrap>
+        <SearchWrap>
+          <SearchIcon size={16} />
+          <SearchInput placeholder="Buscar clientes..." value={search} onChange={(e) => setSearch(e.target.value)} />
+        </SearchWrap>
 
-      <Grid>
-        {filtered.map((client, i) => (
-          <Card key={client.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-            <CardTop>
-              <Initial>{client.name.charAt(0)}</Initial>
-              <IconButton>
-                <MoreHorizontal size={18} />
-              </IconButton>
-            </CardTop>
-            <Name>{client.name}</Name>
-            <Document>{client.document}</Document>
-            <Details>
-              <DetailRow>
-                <Mail size={14} />
-                <span>{client.email}</span>
-              </DetailRow>
-              <DetailRow>
-                <Phone size={14} />
-                <span>{client.phone}</span>
-              </DetailRow>
-            </Details>
-            <Footer>
-              <ContractsInfo>
-                {client.contracts} contrato{client.contracts !== 1 ? "s" : ""}
-              </ContractsInfo>
-            </Footer>
-          </Card>
-        ))}
-      </Grid>
-    </div>
+        <Grid>
+          {filtered.map((client, i) => (
+            <Card key={client.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+              <CardTop>
+                <Initial>{client.name.charAt(0)}</Initial>
+                <IconButton type="button" onClick={() => openEditModal(client.id)}>
+                  <MoreHorizontal size={18} />
+                </IconButton>
+              </CardTop>
+              <Name>{client.name}</Name>
+              <Document>{client.document}</Document>
+              <Details>
+                <DetailRow>
+                  <Mail size={14} />
+                  <span>{client.email}</span>
+                </DetailRow>
+                <DetailRow>
+                  <Phone size={14} />
+                  <span>{client.phone}</span>
+                </DetailRow>
+              </Details>
+              <Footer>
+                <ContractsInfo>
+                  {client.contracts} contrato{client.contracts !== 1 ? "s" : ""}
+                </ContractsInfo>
+              </Footer>
+            </Card>
+          ))}
+        </Grid>
+      </div>
+
+      <NewClientModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        initialData={
+          selectedClient
+            ? {
+                name: selectedClient.name,
+                document: selectedClient.document,
+                email: selectedClient.email,
+                phone: selectedClient.phone,
+              }
+            : undefined
+        }
+        onSubmit={handleModalSubmit}
+        onInactivate={selectedClient ? handleInactivate : undefined}
+      />
+    </>
   );
 };
 

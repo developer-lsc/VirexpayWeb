@@ -297,11 +297,6 @@ const Dashboard = () => {
           <Heading>Dashboard</Heading>
           <SubHeading>Visão geral do seu negócio</SubHeading>
         </div>
-        <Link to="/app/contratos">
-          <Button variant="accent">
-            <Plus size={16} /> Novo contrato
-          </Button>
-        </Link>
       </Header>
 
       <MetricsGrid initial="hidden" animate="visible">

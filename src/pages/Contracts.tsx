@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import NewContractModal from "@/components/NewContractModal";
 import { Plus, Search, FilePenLine, MoreHorizontal, Eye } from "lucide-react";
 
 const mockContracts = [
@@ -188,77 +189,82 @@ const Badge = styled.span<{ $status: string }>`
 
 const Contracts = () => {
   const [search, setSearch] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filtered = mockContracts.filter(
     (c) => c.title.toLowerCase().includes(search.toLowerCase()) || c.client.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
-    <div>
-      <Header>
-        <div>
-          <Title>Contratos</Title>
-          <Subtitle>{mockContracts.length} contratos</Subtitle>
-        </div>
-        <Button variant="accent">
-          <Plus size={16} /> Novo contrato
-        </Button>
-      </Header>
+    <>
+      <div>
+        <Header>
+          <div>
+            <Title>Contratos</Title>
+            <Subtitle>{mockContracts.length} contratos</Subtitle>
+          </div>
+          <Button variant="accent" onClick={() => setIsModalOpen(true)}>
+            <Plus size={16} /> Novo contrato
+          </Button>
+        </Header>
 
-      <SearchWrap>
-        <SearchIcon size={16} />
-        <SearchInput placeholder="Buscar contratos..." value={search} onChange={(e) => setSearch(e.target.value)} />
-      </SearchWrap>
+        <SearchWrap>
+          <SearchIcon size={16} />
+          <SearchInput placeholder="Buscar contratos..." value={search} onChange={(e) => setSearch(e.target.value)} />
+        </SearchWrap>
 
-      <Card initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
-        <Overflow>
-          <Table>
-            <thead>
-              <tr>
-                <HeadCell>Contrato</HeadCell>
-                <HeadCell>Cliente</HeadCell>
-                <HeadCell>Valor</HeadCell>
-                <HeadCell>Parcelas</HeadCell>
-                <HeadCell>Status</HeadCell>
-                <HeadCell>Data</HeadCell>
-                <HeadCell />
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((c, i) => (
-                <Row key={c.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03 }}>
-                  <ContractMainCell>
-                    <ContractCell>
-                      <ContractIcon>
-                        <FilePenLine size={16} />
-                      </ContractIcon>
-                      <span>{c.title}</span>
-                    </ContractCell>
-                  </ContractMainCell>
-                  <MutedCell>{c.client}</MutedCell>
-                  <StrongCell>{c.value}</StrongCell>
-                  <MutedCell>{c.installments}x</MutedCell>
-                  <Cell>
-                    <Badge $status={c.status}>{statusLabels[c.status]}</Badge>
-                  </Cell>
-                  <MutedCell>{c.date}</MutedCell>
-                  <Cell>
-                    <Actions>
-                      <ActionButton>
-                        <Eye size={16} />
-                      </ActionButton>
-                      <ActionButton>
-                        <MoreHorizontal size={16} />
-                      </ActionButton>
-                    </Actions>
-                  </Cell>
-                </Row>
-              ))}
-            </tbody>
-          </Table>
-        </Overflow>
-      </Card>
-    </div>
+        <Card initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
+          <Overflow>
+            <Table>
+              <thead>
+                <tr>
+                  <HeadCell>Contrato</HeadCell>
+                  <HeadCell>Cliente</HeadCell>
+                  <HeadCell>Valor</HeadCell>
+                  <HeadCell>Parcelas</HeadCell>
+                  <HeadCell>Status</HeadCell>
+                  <HeadCell>Data</HeadCell>
+                  <HeadCell />
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((c, i) => (
+                  <Row key={c.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03 }}>
+                    <ContractMainCell>
+                      <ContractCell>
+                        <ContractIcon>
+                          <FilePenLine size={16} />
+                        </ContractIcon>
+                        <span>{c.title}</span>
+                      </ContractCell>
+                    </ContractMainCell>
+                    <MutedCell>{c.client}</MutedCell>
+                    <StrongCell>{c.value}</StrongCell>
+                    <MutedCell>{c.installments}x</MutedCell>
+                    <Cell>
+                      <Badge $status={c.status}>{statusLabels[c.status]}</Badge>
+                    </Cell>
+                    <MutedCell>{c.date}</MutedCell>
+                    <Cell>
+                      <Actions>
+                        <ActionButton>
+                          <Eye size={16} />
+                        </ActionButton>
+                        <ActionButton>
+                          <MoreHorizontal size={16} />
+                        </ActionButton>
+                      </Actions>
+                    </Cell>
+                  </Row>
+                ))}
+              </tbody>
+            </Table>
+          </Overflow>
+        </Card>
+      </div>
+
+      <NewContractModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
   );
 };
 
